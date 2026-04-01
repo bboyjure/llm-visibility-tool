@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { ThemeProvider, useT } from "./context/ThemeContext";
-import { callOllama, extractJSON, normUrl, getDom } from "./api/ollama";
+import { callLLM, extractJSON, normUrl, getDom } from "./api/llm";
 import { STAGES } from "./constants";
 import { InputScreen } from "./screens/InputScreen";
 import { GeneratingScreen } from "./screens/GeneratingScreen";
@@ -29,12 +29,12 @@ function AppInner() {
     setError(""); setStep("generating");
     startTO(120000, () => { setError("Sorry, we couldn't fetch results. The website may be unreachable. Please try again."); setStep("input"); });
     try {
-      const research = await callOllama(
+      const research = await callLLM(
         "You are a business analyst. Summarize what the business does, its brand name, and main offerings in 3 sentences.",
         `Describe the business at this URL: ${norm}`
       );
       if (!research) throw new Error("Could not analyze website");
-      const raw = await callOllama(
+      const raw = await callLLM(
         "You output only valid JSON. No explanation, no markdown, no extra text.",
         `Business description: ${research}\n\nExtract the brand name and generate exactly 5 search prompts a potential customer would type into an AI assistant when looking for this type of product or service.\n\nReturn this exact JSON structure:\n{"brand":"BrandName","prompts":[{"stage":"Awareness","prompt":"..."},{"stage":"Consideration","prompt":"..."},{"stage":"Decision","prompt":"..."},{"stage":"Problem-focused","prompt":"..."},{"stage":"Solution-focused","prompt":"..."}]}`,
         true
@@ -63,14 +63,14 @@ function AppInner() {
       for (const llm of ["OpenAI", "Gemini"]) {
         setProgress({ current: all.length, total, label: `${llm} · ${p.stage}` });
         try {
-          const raw = await callOllama(
+          const raw = await callLLM(
             `You are simulating what ${llm === "OpenAI" ? "ChatGPT" : "Google Gemini"} would answer. Based on your training knowledge, identify relevant brands and typical sources for this query. Output only valid JSON.`,
             `Query: "${p.prompt}"\n\nReturn this exact JSON with real brand names and realistic source domains:\n{"brands_mentioned":[{"name":"BrandName","mentions":1,"context":"why mentioned"},{"name":"Brand2","mentions":1,"context":"why mentioned"}],"citations":[{"url":"https://example.com/page","domain":"example.com","title":"Page Title"},{"url":"https://site2.com","domain":"site2.com","title":"Title"}],"response_summary":"2 sentence summary of what the AI would say"}`,
             true
           );
           let parsed = extractJSON(raw);
           if (!parsed) {
-            const fb = await callOllama(
+            const fb = await callLLM(
               "You output only valid JSON, no explanation.",
               `For the search query "${p.prompt}", name 3 relevant software brands and 2 websites that would be cited. Use this format:\n{"brands_mentioned":[{"name":"Brand","mentions":1,"context":"ctx"}],"citations":[{"url":"https://ex.com","domain":"ex.com","title":"Title"}],"response_summary":"summary"}`,
               true

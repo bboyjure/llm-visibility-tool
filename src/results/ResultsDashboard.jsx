@@ -1,6 +1,6 @@
 import { useT } from "../context/ThemeContext";
 import { Toggle } from "../components/Toggle";
-import { getDom } from "../api/claude";
+import { getDom } from "../api/llm";
 import { OverviewTab } from "./OverviewTab";
 import { PromptsTab } from "./PromptsTab";
 import { BrandsTab } from "./BrandsTab";

@@ -1,6 +1,6 @@
 import { useT } from "../context/ThemeContext";
 import { Toggle } from "../components/Toggle";
-import { getDom } from "../api/claude";
+import { getDom } from "../api/llm";
 
 export function GeneratingScreen({ url }) {
   const { t } = useT();
