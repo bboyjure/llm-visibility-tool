@@ -4,10 +4,6 @@ server:
   secret_key: "llm-visibility-tool-secret-change-in-prod"
   limiter: false
   image_proxy: false
-  http_protocol_version: "1.0"
-
-ui:
-  static_use_hash: true
 
 search:
   safe_search: 0
