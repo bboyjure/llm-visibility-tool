@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { ThemeProvider, useT } from "./context/ThemeContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import { callLLM, extractJSON, normUrl, getDom } from "./api/llm";
 import { STAGES } from "./constants";
 import { InputScreen } from "./screens/InputScreen";
@@ -9,7 +9,6 @@ import { AnalyzingScreen } from "./screens/AnalyzingScreen";
 import { ResultsDashboard } from "./results/ResultsDashboard";
 
 function AppInner() {
-  const { mode } = useT();
   const [url, setUrl] = useState("");
   const [step, setStep] = useState("input");
   const [prompts, setPrompts] = useState([]);
@@ -252,7 +251,7 @@ function AppInner() {
   if (step === "generating") return <GeneratingScreen url={url} />;
   if (step === "prompts") return <PromptsScreen prompts={prompts} brandName={brandName} onAnalyze={analyze} onBack={handleBack} />;
   if (step === "analyzing") return <AnalyzingScreen progress={progress} />;
-  if (step === "results" && results) return <ResultsDashboard results={results} brandName={brandName} url={url} activeTab={activeTab} setActiveTab={setActiveTab} onReset={handleReset} mode={mode} />;
+  if (step === "results" && results) return <ResultsDashboard results={results} brandName={brandName} url={url} activeTab={activeTab} setActiveTab={setActiveTab} onReset={handleReset} />;
   return null;
 }
 

@@ -1,4 +1,3 @@
-import { useT } from "../context/ThemeContext";
 import { Toggle } from "../components/Toggle";
 import { getDom } from "../api/llm";
 import { OverviewTab } from "./OverviewTab";
@@ -15,24 +14,21 @@ const TABS = [
   { id: "actions", l: "Actions" },
 ];
 
-export function ResultsDashboard({ results, brandName, url, activeTab, setActiveTab, onReset, mode }) {
-  const { t } = useT();
-  const page = { fontFamily: "'Inter',-apple-system,system-ui,sans-serif", minHeight: "100vh", background: t.bg, transition: "background 0.3s" };
-
+export function ResultsDashboard({ results, brandName, url, activeTab, setActiveTab, onReset }) {
   return (
-    <div style={page}>
+    <div className="min-h-screen bg-bg transition-colors duration-300">
       {/* Header */}
-      <div style={{ background: t.bgCard, borderBottom: `1px solid ${t.border}`, padding: "14px 20px" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+      <div className="bg-bg-card border-b border-border px-5 py-3.5">
+        <div className="max-w-250 mx-auto flex items-center justify-between flex-wrap gap-2.5">
           <div>
-            <h1 style={{ fontSize: 17, fontWeight: 800, color: t.text, margin: 0 }}>Visibility Report</h1>
-            <p style={{ fontSize: 12, color: t.textTer, margin: "2px 0 0" }}>{brandName} · {getDom(url)} · {results.totalPrompts} prompts</p>
+            <h1 className="text-[17px] font-extrabold text-text m-0">Visibility Report</h1>
+            <p className="text-[12px] text-text-ter mt-0.5 m-0">{brandName} · {getDom(url)} · {results.totalPrompts} prompts</p>
           </div>
-          <div style={{ display: "flex", gap: 8 }}>
+          <div className="flex gap-2">
             <Toggle />
             <button
               onClick={onReset}
-              style={{ background: t.bgCard, color: t.textSec, border: `1px solid ${t.border}`, borderRadius: 10, padding: "8px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+              className="bg-bg-card text-text-sec border border-border rounded-xl px-3.5 py-2 text-[12px] font-semibold cursor-pointer"
             >
               + New
             </button>
@@ -41,25 +37,28 @@ export function ResultsDashboard({ results, brandName, url, activeTab, setActive
       </div>
 
       {/* Tabs */}
-      <div style={{ background: t.bgCard, borderBottom: `1px solid ${t.border}`, overflowX: "auto" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex" }}>
+      <div className="bg-bg-card border-b border-border overflow-x-auto">
+        <div className="max-w-250 mx-auto flex">
           {TABS.map(tb => (
-            <button key={tb.id} onClick={() => setActiveTab(tb.id)} style={{
-              padding: "12px 16px", border: "none", background: "none", cursor: "pointer",
-              fontSize: 13, fontWeight: 600, whiteSpace: "nowrap",
-              color: activeTab === tb.id ? t.accent : t.textTer,
-              borderBottom: activeTab === tb.id ? `2px solid ${t.accent}` : "2px solid transparent",
-            }}>
+            <button
+              key={tb.id}
+              onClick={() => setActiveTab(tb.id)}
+              className="px-4 py-3 border-none bg-transparent cursor-pointer text-[13px] font-semibold whitespace-nowrap transition-colors duration-150"
+              style={{
+                color: activeTab === tb.id ? "var(--color-accent)" : "var(--color-text-ter)",
+                borderBottom: activeTab === tb.id ? "2px solid var(--color-accent)" : "2px solid transparent",
+              }}
+            >
               {tb.l}
             </button>
           ))}
         </div>
       </div>
 
-      <div style={{ maxWidth: 1000, margin: "0 auto", padding: 20 }}>
+      <div className="max-w-250 mx-auto p-5">
         {activeTab === "overview" && <OverviewTab results={results} />}
         {activeTab === "prompts" && <PromptsTab promptData={results.promptData} />}
-        {activeTab === "brands" && <BrandsTab brands={results.brands} brandName={brandName} mode={mode} />}
+        {activeTab === "brands" && <BrandsTab brands={results.brands} brandName={brandName} />}
         {activeTab === "citations" && <CitationsTab citations={results.citations} />}
         {activeTab === "actions" && <ActionsTab recs={results.recs} />}
       </div>

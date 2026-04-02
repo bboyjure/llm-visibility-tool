@@ -1,20 +1,13 @@
 import { useState, useMemo } from "react";
-import { useT } from "../context/ThemeContext";
 
 function SortIcon({ col, sortCol, sortDir }) {
-  if (sortCol !== col) return <span style={{ opacity: 0.3 }}>↕</span>;
+  if (sortCol !== col) return <span className="opacity-30">↕</span>;
   return <span>{sortDir === "asc" ? "↑" : "↓"}</span>;
 }
 
-export function BrandsTab({ brands, brandName, mode }) {
-  const { t } = useT();
+export function BrandsTab({ brands, brandName }) {
   const [sortCol, setSortCol] = useState("count");
   const [sortDir, setSortDir] = useState("desc");
-
-  const card = { background: t.bgCard, borderRadius: 14, border: `1px solid ${t.border}`, padding: 22, transition: "background 0.3s, border-color 0.3s" };
-  const hd = { fontSize: 14, fontWeight: 700, color: t.text, margin: 0 };
-  const sub = { fontSize: 13, color: t.textTer, margin: 0 };
-  const pTrack = { width: "100%", height: 5, background: t.track, borderRadius: 100, overflow: "hidden" };
 
   const totalBrandCount = brands.reduce((s, b) => s + b.count, 0);
   const isBrand = (n) => {
@@ -42,25 +35,32 @@ export function BrandsTab({ brands, brandName, mode }) {
   return (
     <>
       {/* Competitor horizontal bars */}
-      <div style={{ ...card, marginBottom: 16 }}>
-        <h3 style={{ ...hd, marginBottom: 16 }}>Competitor Mentions vs {brandName}</h3>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <div className="bg-bg-card border border-border rounded-2xl p-5 mb-4 transition-colors duration-300">
+        <h3 className="text-[14px] font-bold text-text mb-4">Competitor Mentions vs {brandName}</h3>
+        <div className="flex flex-col gap-2.5">
           {brands.slice(0, 10).map((b, i) => {
             const maxCount = brands[0]?.count || 1;
             const me = isBrand(b.name);
             return (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ width: 100, flexShrink: 0, textAlign: "right" }}>
-                  <span style={{ fontSize: 12, fontWeight: me ? 700 : 500, color: me ? t.accent : t.textSec }}>{b.name}</span>
+              <div key={i} className="flex items-center gap-3">
+                <div className="w-25 shrink-0 text-right">
+                  <span
+                    className="text-[12px]"
+                    style={{ fontWeight: me ? 700 : 500, color: me ? "var(--color-accent)" : "var(--color-text-sec)" }}
+                  >
+                    {b.name}
+                  </span>
                 </div>
-                <div style={{ flex: 1, height: 8, background: t.track, borderRadius: 100, overflow: "hidden" }}>
-                  <div style={{
-                    width: `${(b.count / maxCount) * 100}%`, height: "100%",
-                    background: me ? t.accent : (mode === "dark" ? "#4B5563" : "#D1D5DB"),
-                    borderRadius: 100, transition: "width 0.6s ease",
-                  }} />
+                <div className="flex-1 h-2 bg-track rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-[width] duration-500 ease-out"
+                    style={{
+                      width: `${(b.count / maxCount) * 100}%`,
+                      background: me ? "var(--color-accent)" : "var(--color-bar-comp)",
+                    }}
+                  />
                 </div>
-                <span style={{ fontSize: 12, fontWeight: 700, color: t.text, minWidth: 32, textAlign: "right" }}>
+                <span className="text-[12px] font-bold text-text min-w-8 text-right">
                   {totalBrandCount > 0 ? (b.count / totalBrandCount * 100).toFixed(0) : 0}%
                 </span>
               </div>
@@ -70,22 +70,23 @@ export function BrandsTab({ brands, brandName, mode }) {
       </div>
 
       {/* Sortable table */}
-      <div style={{ ...card, overflowX: "auto" }}>
-        <h3 style={{ ...hd, marginBottom: 4 }}>All Brands</h3>
-        <p style={{ ...sub, marginBottom: 16 }}>Click column headers to sort</p>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 480 }}>
+      <div className="bg-bg-card border border-border rounded-2xl p-5 overflow-x-auto transition-colors duration-300">
+        <h3 className="text-[14px] font-bold text-text mb-1">All Brands</h3>
+        <p className="text-[13px] text-text-ter mb-4">Click column headers to sort</p>
+        <table className="w-full border-collapse text-[13px] min-w-120">
           <thead>
-            <tr style={{ borderBottom: `2px solid ${t.border}` }}>
+            <tr className="border-b-2 border-border">
               {[{ k: "name", l: "Brand", align: "left" }, { k: "count", l: "Total", align: "center" }, { k: "openai", l: "ChatGPT", align: "center" }, { k: "gemini", l: "Gemini", align: "center" }].map(col => (
-                <th key={col.k} onClick={() => handleSort(col.k)} style={{
-                  textAlign: col.align, padding: "10px 12px", fontSize: 10, fontWeight: 700,
-                  color: t.textMut, textTransform: "uppercase", letterSpacing: "0.06em",
-                  cursor: "pointer", userSelect: "none",
-                }}>
+                <th
+                  key={col.k}
+                  onClick={() => handleSort(col.k)}
+                  className="px-3 py-2.5 text-[10px] font-bold text-text-mut uppercase tracking-widest cursor-pointer select-none"
+                  style={{ textAlign: col.align }}
+                >
                   {col.l} <SortIcon col={col.k} sortCol={sortCol} sortDir={sortDir} />
                 </th>
               ))}
-              <th style={{ textAlign: "left", padding: "10px 12px", fontSize: 10, fontWeight: 700, color: t.textMut, textTransform: "uppercase", width: 120 }}>Share</th>
+              <th className="px-3 py-2.5 text-[10px] font-bold text-text-mut uppercase tracking-widest text-left w-30">Share</th>
             </tr>
           </thead>
           <tbody>
@@ -93,20 +94,32 @@ export function BrandsTab({ brands, brandName, mode }) {
               const share = totalBrandCount > 0 ? (b.count / totalBrandCount * 100) : 0;
               const me = isBrand(b.name);
               return (
-                <tr key={i} style={{ background: me ? t.rowHL : "transparent", borderBottom: `1px solid ${t.borderLight}` }}>
-                  <td style={{ padding: 12 }}>
-                    <span style={{ fontWeight: me ? 700 : 500, color: me ? t.accent : t.text }}>{b.name}</span>
-                    {me && <span style={{ marginLeft: 6, fontSize: 10, fontWeight: 700, background: t.youBg, color: t.youText, padding: "2px 6px", borderRadius: 4 }}>YOU</span>}
+                <tr
+                  key={i}
+                  className="border-b border-border-light"
+                  style={{ background: me ? "var(--color-row-hl)" : "transparent" }}
+                >
+                  <td className="p-3">
+                    <span style={{ fontWeight: me ? 700 : 500, color: me ? "var(--color-accent)" : "var(--color-text)" }}>{b.name}</span>
+                    {me && (
+                      <span className="ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded"
+                        style={{ background: "var(--color-you-bg)", color: "var(--color-you-text)" }}>
+                        YOU
+                      </span>
+                    )}
                   </td>
-                  <td style={{ padding: 12, textAlign: "center", fontWeight: 700, color: t.text }}>{b.count}</td>
-                  <td style={{ padding: 12, textAlign: "center", color: "#10A37F", fontWeight: 600 }}>{b.openai}</td>
-                  <td style={{ padding: 12, textAlign: "center", color: "#4285F4", fontWeight: 600 }}>{b.gemini}</td>
-                  <td style={{ padding: 12, width: 120 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <div style={{ flex: 1, ...pTrack, height: 4 }}>
-                        <div style={{ width: `${share}%`, height: "100%", background: me ? t.accent : "#6B7280", borderRadius: 100 }} />
+                  <td className="p-3 text-center font-bold text-text">{b.count}</td>
+                  <td className="p-3 text-center font-semibold text-[#10A37F]">{b.openai}</td>
+                  <td className="p-3 text-center font-semibold text-[#4285F4]">{b.gemini}</td>
+                  <td className="p-3 w-30">
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 h-1 bg-track rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${share}%`, background: me ? "var(--color-accent)" : "#6B7280" }}
+                        />
                       </div>
-                      <span style={{ fontSize: 11, color: t.textTer, fontWeight: 600, minWidth: 28, textAlign: "right" }}>{share.toFixed(0)}%</span>
+                      <span className="text-[11px] text-text-ter font-semibold min-w-7 text-right">{share.toFixed(0)}%</span>
                     </div>
                   </td>
                 </tr>

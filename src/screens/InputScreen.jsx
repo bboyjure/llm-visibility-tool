@@ -1,29 +1,24 @@
-import { useT } from "../context/ThemeContext";
 import { Toggle } from "../components/Toggle";
 import { Pill } from "../components/Pill";
 
 export function InputScreen({ url, setUrl, error, setError, onGenerate }) {
-  const { t } = useT();
-  const card = { background: t.bgCard, borderRadius: 14, border: `1px solid ${t.border}`, padding: 22, transition: "background 0.3s, border-color 0.3s" };
-  const page = { fontFamily: "'Inter',-apple-system,system-ui,sans-serif", minHeight: "100vh", background: t.bg, transition: "background 0.3s" };
-
   return (
-    <div style={{ ...page, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-      <div style={{ position: "fixed", top: 16, right: 16, zIndex: 10 }}><Toggle /></div>
-      <div style={{ width: "100%", maxWidth: 520, textAlign: "center" }}>
-        <Pill bg={t.accentBg} color={t.accentText}>
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#10B981" }} />
+    <div className="min-h-screen bg-bg flex items-center justify-center p-5 transition-colors duration-300">
+      <div className="fixed top-4 right-4 z-10"><Toggle /></div>
+      <div className="w-full max-w-[520px] text-center">
+        <Pill bg="var(--color-accent-bg)" color="var(--color-accent-text)">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
           AI Visibility Tool
         </Pill>
-        <h1 style={{ fontSize: "clamp(26px,5vw,40px)", fontWeight: 800, color: t.text, lineHeight: 1.15, margin: "20px 0 12px", letterSpacing: "-0.03em" }}>
-          How visible is your<br />brand in <span style={{ color: t.accent }}>AI search</span>?
+        <h1 className="text-[clamp(26px,5vw,40px)] font-extrabold text-text leading-tight mt-5 mb-3 tracking-tight">
+          How visible is your<br />brand in <span className="text-accent">AI search</span>?
         </h1>
-        <p style={{ fontSize: 15, color: t.textSec, maxWidth: 380, margin: "0 auto 32px", lineHeight: 1.6 }}>
+        <p className="text-[15px] text-text-sec max-w-[380px] mx-auto mb-8 leading-relaxed">
           Analyze your brand's presence in ChatGPT and Gemini.
         </p>
-        <div style={{ ...card, padding: 28 }}>
-          <div style={{ position: "relative", marginBottom: 14 }}>
-            <svg style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: t.textMut }} width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <div className="bg-bg-card border border-border rounded-2xl p-7 transition-colors duration-300">
+          <div className="relative mb-3.5">
+            <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-mut" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10A15 15 0 0112 2" />
             </svg>
             <input
@@ -31,24 +26,20 @@ export function InputScreen({ url, setUrl, error, setError, onGenerate }) {
               onChange={e => { setUrl(e.target.value); setError(""); }}
               onKeyDown={e => e.key === "Enter" && onGenerate()}
               placeholder="yourwebsite.com"
-              style={{
-                width: "100%", padding: "14px 16px 14px 42px", borderRadius: 10,
-                border: `1px solid ${t.inputBorder}`, fontSize: 15, outline: "none",
-                background: t.inputBg, color: t.text, boxSizing: "border-box",
-              }}
+              className="w-full py-3.5 pr-4 pl-[42px] rounded-xl border border-input-border text-[15px] outline-none bg-input-bg text-text"
             />
           </div>
           <button
             onClick={onGenerate}
-            style={{ background: t.grad, color: "#fff", border: "none", borderRadius: 10, padding: "14px 28px", fontSize: 15, fontWeight: 600, cursor: "pointer", width: "100%" }}
+            className="bg-grad text-white border-none rounded-xl py-3.5 px-7 text-[15px] font-semibold cursor-pointer w-full"
           >
             Analyze Visibility →
           </button>
-          {error && <p style={{ color: "#EF4444", fontSize: 13, marginTop: 12, textAlign: "left" }}>{error}</p>}
+          {error && <p className="text-[#EF4444] text-[13px] mt-3 text-left">{error}</p>}
         </div>
-        <div style={{ display: "flex", justifyContent: "center", gap: 20, marginTop: 28, flexWrap: "wrap" }}>
+        <div className="flex justify-center gap-5 mt-7 flex-wrap">
           {["ChatGPT & Gemini", "5 buying stages", "Citation analysis"].map((x, i) => (
-            <span key={i} style={{ fontSize: 12, color: t.textMut, display: "flex", alignItems: "center", gap: 5 }}>
+            <span key={i} className="text-[12px] text-text-mut flex items-center gap-1">
               <svg width="14" height="14" fill="none" stroke="#10B981" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" /></svg>
               {x}
             </span>

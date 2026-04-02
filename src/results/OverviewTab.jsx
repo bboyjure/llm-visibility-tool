@@ -1,60 +1,65 @@
-import { useT } from "../context/ThemeContext";
 import { ScoreRing } from "../components/ScoreRing";
 import { DonutChart } from "../components/DonutChart";
 import { Bar } from "../components/Bar";
 import { STAGE_DOT } from "../constants";
 
 export function OverviewTab({ results }) {
-  const { t } = useT();
-  const card = { background: t.bgCard, borderRadius: 14, border: `1px solid ${t.border}`, padding: 22, transition: "background 0.3s, border-color 0.3s" };
-  const hd = { fontSize: 14, fontWeight: 700, color: t.text, margin: 0 };
-
   return (
     <>
       {/* Visibility Score Hero */}
-      <div style={{ ...card, marginBottom: 16, display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
+      <div className="bg-bg-card border border-border rounded-2xl p-5 mb-4 flex items-center gap-6 flex-wrap transition-colors duration-300">
         <div>
-          <div style={{ fontSize: 11, fontWeight: 700, color: t.textTer, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>Visibility Score</div>
-          <div style={{ fontSize: 48, fontWeight: 800, color: t.text, lineHeight: 1 }}>{results.overall.toFixed(0)}%</div>
-          <div style={{ fontSize: 12, color: results.overall >= 50 ? "#10B981" : results.overall >= 25 ? "#F59E0B" : "#EF4444", fontWeight: 600, marginTop: 4 }}>
+          <div className="text-[11px] font-bold text-text-ter uppercase tracking-widest mb-1.5">Visibility Score</div>
+          <div className="text-[48px] font-extrabold text-text leading-none">{results.overall.toFixed(0)}%</div>
+          <div
+            className="text-[12px] font-semibold mt-1"
+            style={{ color: results.overall >= 50 ? "#10B981" : results.overall >= 25 ? "#F59E0B" : "#EF4444" }}
+          >
             {results.overall >= 50 ? "Strong presence" : results.overall >= 25 ? "Moderate — room to grow" : "Low — action needed"}
           </div>
         </div>
-        <div style={{ display: "flex", gap: 16, marginLeft: "auto" }}>
+        <div className="flex gap-4 ml-auto">
           {[{ l: "ChatGPT", s: results.openai, c: "#10A37F" }, { l: "Gemini", s: results.gemini, c: "#4285F4" }].map((x, i) => (
-            <div key={i} style={{ textAlign: "center" }}>
-              <div style={{ position: "relative", display: "inline-block" }}>
+            <div key={i} className="text-center">
+              <div className="relative inline-block">
                 <ScoreRing score={x.s} size={64} stroke={5} color={x.c} />
-                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, color: t.text }}>
+                <div className="absolute inset-0 flex items-center justify-center text-[14px] font-extrabold text-text">
                   {x.s.toFixed(0)}%
                 </div>
               </div>
-              <div style={{ fontSize: 11, fontWeight: 600, color: t.textTer, marginTop: 4 }}>{x.l}</div>
+              <div className="text-[11px] font-semibold text-text-ter mt-1">{x.l}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* Two-column: Donut + Top Sources */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16, marginBottom: 16 }}>
-        <div style={card}>
-          <h3 style={{ ...hd, marginBottom: 16 }}>Brands Mentioned</h3>
+      <div className="grid gap-4 mb-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
+        <div className="bg-bg-card border border-border rounded-2xl p-5 transition-colors duration-300">
+          <h3 className="text-[14px] font-bold text-text mb-4">Brands Mentioned</h3>
           <DonutChart data={results.brands.slice(0, 6).map(b => ({ label: b.name, value: b.count }))} size={150} />
         </div>
-        <div style={card}>
-          <h3 style={{ ...hd, marginBottom: 16 }}>Top 10 Sources</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div className="bg-bg-card border border-border rounded-2xl p-5 transition-colors duration-300">
+          <h3 className="text-[14px] font-bold text-text mb-4">Top 10 Sources</h3>
+          <div className="flex flex-col gap-2.5">
             {results.citations.slice(0, 10).map((c, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0, flex: 1 }}>
-                  <a href={`https://${c.domain}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: t.accent || t.text, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textDecoration: "none" }}>{c.domain}</a>
-                  <div style={{ display: "flex", gap: 3 }}>
+              <div key={i} className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <a
+                    href={`https://${c.domain}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[13px] text-accent font-medium overflow-hidden text-ellipsis whitespace-nowrap no-underline"
+                  >
+                    {c.domain}
+                  </a>
+                  <div className="flex gap-0.75">
                     {c.llms.map(l => (
-                      <div key={l} style={{ width: 14, height: 14, borderRadius: 7, background: l === "OpenAI" ? "#10A37F" : "#4285F4", flexShrink: 0 }} />
+                      <div key={l} className="w-3.5 h-3.5 rounded-full shrink-0" style={{ background: l === "OpenAI" ? "#10A37F" : "#4285F4" }} />
                     ))}
                   </div>
                 </div>
-                <span style={{ fontSize: 12, fontWeight: 700, color: t.textSec, whiteSpace: "nowrap" }}>{c.pct.toFixed(0)}%</span>
+                <span className="text-[12px] font-bold text-text-sec whitespace-nowrap">{c.pct.toFixed(0)}%</span>
               </div>
             ))}
           </div>
@@ -62,16 +67,16 @@ export function OverviewTab({ results }) {
       </div>
 
       {/* Stage Breakdown */}
-      <div style={card}>
-        <h3 style={{ ...hd, marginBottom: 18 }}>Visibility by Stage</h3>
+      <div className="bg-bg-card border border-border rounded-2xl p-5 transition-colors duration-300">
+        <h3 className="text-[14px] font-bold text-text mb-4">Visibility by Stage</h3>
         {results.stages.map((st, i) => (
-          <div key={i} style={{ marginBottom: i < results.stages.length - 1 ? 14 : 0 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ width: 8, height: 8, borderRadius: "50%", background: STAGE_DOT[st.stage] }} />
-                <span style={{ fontSize: 13, fontWeight: 600, color: t.textSec }}>{st.stage}</span>
+          <div key={i} className={i < results.stages.length - 1 ? "mb-3.5" : ""}>
+            <div className="flex justify-between items-center mb-1.5">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full" style={{ background: STAGE_DOT[st.stage] }} />
+                <span className="text-[13px] font-semibold text-text-sec">{st.stage}</span>
               </div>
-              <span style={{ fontSize: 13, fontWeight: 700, color: t.text }}>{Math.round(st.score)}%</span>
+              <span className="text-[13px] font-bold text-text">{Math.round(st.score)}%</span>
             </div>
             <Bar value={st.score} color={STAGE_DOT[st.stage]} />
           </div>

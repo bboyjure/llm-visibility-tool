@@ -1,44 +1,46 @@
-import { useT } from "../context/ThemeContext";
 import { Pill } from "../components/Pill";
 
 export function ActionsTab({ recs }) {
-  const { t } = useT();
-  const card = { background: t.bgCard, borderRadius: 14, border: `1px solid ${t.border}`, padding: 22, transition: "background 0.3s, border-color 0.3s" };
-
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      <div style={{ background: t.grad, borderRadius: 14, padding: "22px 24px", color: "#fff" }}>
-        <h3 style={{ fontSize: 17, fontWeight: 800, margin: "0 0 4px" }}>Recommended Actions</h3>
-        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", margin: 0 }}>Based on where LLMs source their answers.</p>
+    <div className="flex flex-col gap-2.5">
+      <div className="bg-grad rounded-2xl px-6 py-5 text-white">
+        <h3 className="text-[17px] font-extrabold mb-1">Recommended Actions</h3>
+        <p className="text-[13px] text-white/70 m-0">Based on where LLMs source their answers.</p>
       </div>
       {recs.map((rec, i) => (
-        <div key={i} style={{ ...card, display: "flex", alignItems: "flex-start", gap: 14 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 10, background: t.track, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>
+        <div key={i} className="bg-bg-card border border-border rounded-2xl p-5 flex items-start gap-3.5 transition-colors duration-300">
+          <div className="w-9.5 h-9.5 rounded-xl bg-track flex items-center justify-center text-[18px] shrink-0">
             {rec.icon}
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 4 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: t.text }}>{rec.action}</span>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap mb-1">
+              <span className="text-[13px] font-bold text-text">{rec.action}</span>
               <Pill bg={rec.pri === "High" ? "#EF444420" : "#F59E0B20"} color={rec.pri === "High" ? "#F87171" : "#FBBF24"}>
                 {rec.pri}
               </Pill>
-              {rec.type && <Pill bg={t.accentBg} color={t.accentText}>{rec.type}</Pill>}
+              {rec.type && <Pill bg="var(--color-accent-bg)" color="var(--color-accent-text)">{rec.type}</Pill>}
             </div>
-            <p style={{ fontSize: 12, color: t.textSec, lineHeight: 1.6, margin: 0 }}>{rec.detail}</p>
-            {rec.source && <div style={{ fontSize: 11, color: t.textMut, marginTop: 6 }}>Source: {rec.source}</div>}
+            <p className="text-[12px] text-text-sec leading-relaxed m-0">{rec.detail}</p>
+            {rec.source && <div className="text-[11px] text-text-mut mt-1.5">Source: {rec.source}</div>}
             {rec.links && rec.links.length > 0 && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 8 }}>
+              <div className="flex flex-col gap-0.75 mt-2">
                 {rec.links.map((link, j) => (
-                  <div key={j} style={{ fontSize: 11, color: t.accent, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", cursor: "pointer" }}>
+                  <a
+                    key={j}
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] text-accent overflow-hidden text-ellipsis whitespace-nowrap no-underline"
+                  >
                     🔗 {link}
-                  </div>
+                  </a>
                 ))}
               </div>
             )}
             {rec.domains && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 8 }}>
+              <div className="flex flex-wrap gap-1 mt-2">
                 {rec.domains.map((d, j) => (
-                  <span key={j} style={{ fontSize: 10, background: t.track, color: t.textTer, padding: "3px 8px", borderRadius: 5, fontWeight: 500 }}>{d}</span>
+                  <span key={j} className="text-[10px] bg-track text-text-ter px-2 py-0.75 rounded-md font-medium">{d}</span>
                 ))}
               </div>
             )}
@@ -46,9 +48,9 @@ export function ActionsTab({ recs }) {
         </div>
       ))}
       {recs.length === 0 && (
-        <div style={{ ...card, textAlign: "center", padding: 48 }}>
-          <div style={{ fontSize: 32, marginBottom: 8 }}>🎉</div>
-          <p style={{ color: t.textTer, fontWeight: 600 }}>Visibility is strong!</p>
+        <div className="bg-bg-card border border-border rounded-2xl p-12 text-center transition-colors duration-300">
+          <div className="text-[32px] mb-2">🎉</div>
+          <p className="text-text-ter font-semibold">Visibility is strong!</p>
         </div>
       )}
     </div>

@@ -1,22 +1,17 @@
-import { useT } from "../context/ThemeContext";
 import { Toggle } from "../components/Toggle";
 import { getDom } from "../api/llm";
 
 export function GeneratingScreen({ url }) {
-  const { t } = useT();
-  const page = { fontFamily: "'Inter',-apple-system,system-ui,sans-serif", minHeight: "100vh", background: t.bg, transition: "background 0.3s" };
-
   return (
-    <div style={{ ...page, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-      <div style={{ position: "fixed", top: 16, right: 16, zIndex: 10 }}><Toggle /></div>
-      <div style={{ textAlign: "center" }}>
-        <div style={{
-          width: 44, height: 44, border: `3px solid ${t.border}`, borderTopColor: t.accent,
-          borderRadius: "50%", margin: "0 auto 20px", animation: "spin 0.8s linear infinite",
-        }} />
-        <h2 style={{ fontSize: 20, fontWeight: 700, color: t.text, marginBottom: 6 }}>Analyzing your website</h2>
-        <p style={{ fontSize: 14, color: t.textSec }}>Generating prompts for <strong style={{ color: t.accent }}>{getDom(url)}</strong></p>
-        <p style={{ fontSize: 12, color: t.textMut, marginTop: 16 }}>Usually 30–60 seconds</p>
+    <div className="min-h-screen bg-bg flex items-center justify-center p-5 transition-colors duration-300">
+      <div className="fixed top-4 right-4 z-10"><Toggle /></div>
+      <div className="text-center">
+        <div className="w-11 h-11 border-[3px] border-border border-t-accent rounded-full mx-auto mb-5 animate-spin" />
+        <h2 className="text-xl font-bold text-text mb-1.5">Analyzing your website</h2>
+        <p className="text-[14px] text-text-sec">
+          Generating prompts for <strong className="text-accent">{getDom(url)}</strong>
+        </p>
+        <p className="text-[12px] text-text-mut mt-4">Usually 30–60 seconds</p>
       </div>
     </div>
   );
