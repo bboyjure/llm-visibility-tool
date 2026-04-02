@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from "react";
 import { ThemeProvider } from "./context/ThemeContext";
 import { callLLM, extractJSON, normUrl, getDom } from "./api/llm";
+import { getSearchCitations } from "./api/search";
 import { STAGES } from "./constants";
 import { InputScreen } from "./screens/InputScreen";
 import { GeneratingScreen } from "./screens/GeneratingScreen";
@@ -81,7 +82,8 @@ function AppInner() {
             parsed = extractJSON(fb);
           }
           const r = parsed ? (Array.isArray(parsed) ? parsed[0] : parsed) : {};
-          all.push({ prompt: p.prompt, stage: p.stage, llm, brands: r.brands_mentioned || r.brands || [], citations: r.citations || [], summary: r.response_summary || r.summary || "N/A" });
+          const searchCits = await getSearchCitations(p.prompt);
+          all.push({ prompt: p.prompt, stage: p.stage, llm, brands: r.brands_mentioned || r.brands || [], citations: searchCits || r.citations || [], summary: r.response_summary || r.summary || "N/A" });
         } catch {
           all.push({ prompt: p.prompt, stage: p.stage, llm, brands: [], citations: [], summary: "Error" });
         }

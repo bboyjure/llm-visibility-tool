@@ -12,6 +12,26 @@ const extractQuery = (usr) => {
   return usr.split('\n')[0].slice(0, 120);
 };
 
+// Returns real citation objects [{url, domain, title}] from SearXNG, or null if unavailable
+export const getSearchCitations = async (query, count = 8) => {
+  try {
+    const url = `${SEARXNG_URL}?q=${encodeURIComponent(query)}&format=json`;
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const results = (data.results || []).slice(0, count);
+    if (!results.length) return null;
+    return results.map(r => {
+      try {
+        const domain = new URL(r.url).hostname.replace(/^www\./, '');
+        return { url: r.url, domain, title: r.title || domain };
+      } catch { return null; }
+    }).filter(Boolean);
+  } catch {
+    return null;
+  }
+};
+
 // Returns a formatted string of top search results, or null if unavailable
 export const searchWeb = async (usr, count = 5) => {
   const query = extractQuery(usr);
