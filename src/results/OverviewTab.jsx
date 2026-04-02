@@ -47,7 +47,7 @@ export function OverviewTab({ results }) {
             {results.citations.slice(0, 10).map((c, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0, flex: 1 }}>
-                  <span style={{ fontSize: 13, color: t.text, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.domain}</span>
+                  <a href={`https://${c.domain}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: t.accent || t.text, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textDecoration: "none" }}>{c.domain}</a>
                   <div style={{ display: "flex", gap: 3 }}>
                     {c.llms.map(l => (
                       <div key={l} style={{ width: 14, height: 14, borderRadius: 7, background: l === "OpenAI" ? "#10A37F" : "#4285F4", flexShrink: 0 }} />

@@ -30,13 +30,15 @@ function AppInner() {
     startTO(120000, () => { setError("Sorry, we couldn't fetch results. The website may be unreachable. Please try again."); setStep("input"); });
     try {
       const research = await callLLM(
-        "You are a business analyst. Summarize what the business does, its brand name, and main offerings in 3 sentences.",
-        `Describe the business at this URL: ${norm}`
+        "You are a business analyst. Research this website and extract: brand name, product/service category (be specific, e.g. 'project management software', 'CRM for real estate'), target audience (e.g. 'small businesses', 'enterprise teams'), 3-5 key features or offerings, and 2-3 known competitors or alternatives in the same space. Be concise and specific.",
+        `Analyze the business at this URL: ${norm}`,
+        false,
+        true
       );
       if (!research) throw new Error("Could not analyze website");
       const raw = await callLLM(
         "You output only valid JSON. No explanation, no markdown, no extra text.",
-        `Business description: ${research}\n\nExtract the brand name and generate exactly 5 search prompts a potential customer would type into an AI assistant when looking for this type of product or service.\n\nReturn this exact JSON structure:\n{"brand":"BrandName","prompts":[{"stage":"Awareness","prompt":"..."},{"stage":"Consideration","prompt":"..."},{"stage":"Decision","prompt":"..."},{"stage":"Problem-focused","prompt":"..."},{"stage":"Solution-focused","prompt":"..."}]}`,
+        `Business research: ${research}\n\nGenerate exactly 5 search prompts a real potential customer would type into an AI assistant (ChatGPT, Gemini) when looking for this type of product or service. Make each prompt specific to this industry, audience, and use-case — not generic.\n\nExample style for a CRM tool:\n- Awareness: "What tools help manage customer relationships?"\n- Consideration: "Best CRM software for small businesses"\n- Decision: "Salesforce vs HubSpot comparison"\n- Problem-focused: "How to track customer communications effectively"\n- Solution-focused: "CRM with email integration recommendations"\n\nReturn this exact JSON structure:\n{"brand":"BrandName","prompts":[{"stage":"Awareness","prompt":"..."},{"stage":"Consideration","prompt":"..."},{"stage":"Decision","prompt":"..."},{"stage":"Problem-focused","prompt":"..."},{"stage":"Solution-focused","prompt":"..."}]}`,
         true
       );
       const parsed = extractJSON(raw);
@@ -66,6 +68,7 @@ function AppInner() {
           const raw = await callLLM(
             `You are simulating what ${llm === "OpenAI" ? "ChatGPT" : "Google Gemini"} would answer. Based on your training knowledge, identify relevant brands and typical sources for this query. Output only valid JSON.`,
             `Query: "${p.prompt}"\n\nReturn this exact JSON with real brand names and realistic source domains:\n{"brands_mentioned":[{"name":"BrandName","mentions":1,"context":"why mentioned"},{"name":"Brand2","mentions":1,"context":"why mentioned"}],"citations":[{"url":"https://example.com/page","domain":"example.com","title":"Page Title"},{"url":"https://site2.com","domain":"site2.com","title":"Title"}],"response_summary":"2 sentence summary of what the AI would say"}`,
+            true,
             true
           );
           let parsed = extractJSON(raw);
@@ -73,6 +76,7 @@ function AppInner() {
             const fb = await callLLM(
               "You output only valid JSON, no explanation.",
               `For the search query "${p.prompt}", name 3 relevant software brands and 2 websites that would be cited. Use this format:\n{"brands_mentioned":[{"name":"Brand","mentions":1,"context":"ctx"}],"citations":[{"url":"https://ex.com","domain":"ex.com","title":"Title"}],"response_summary":"summary"}`,
+              true,
               true
             );
             parsed = extractJSON(fb);

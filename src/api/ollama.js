@@ -1,18 +1,31 @@
+import { searchWeb } from "./search";
+
 const OLLAMA_URL = import.meta.env.VITE_OLLAMA_URL || "http://localhost:11434/api/chat";
 const MODEL = import.meta.env.VITE_OLLAMA_MODEL || "qwen2.5:1.5b";
 
 // jsonMode=true uses Ollama's format:"json" which forces valid JSON output
-export const callOllama = async (sys, usr, jsonMode = false) => {
-  console.group(`[Ollama] ${jsonMode ? "JSON" : "TEXT"} call`);
+// search=true fetches SearXNG results and prepends them as context
+export const callOllama = async (sys, usr, jsonMode = false, search = false) => {
+  console.group(`[Ollama] ${jsonMode ? "JSON" : "TEXT"}${search ? "+search" : ""} call`);
   console.log("SYSTEM:", sys);
   console.log("USER:", usr);
+
+  let userMsg = usr;
+  if (search) {
+    const webResults = await searchWeb(usr);
+    if (webResults) {
+      console.log("SEARCH RESULTS:", webResults);
+      userMsg = `Web search results:\n${webResults}\n\n${usr}`;
+    }
+  }
+
   try {
     const body = {
       model: MODEL,
       stream: false,
       messages: [
         { role: "system", content: sys },
-        { role: "user", content: usr },
+        { role: "user", content: userMsg },
       ],
     };
     if (jsonMode) body.format = "json";

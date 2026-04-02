@@ -25,9 +25,9 @@ export function CitationsTab({ citations }) {
                 {c.domain.charAt(0).toUpperCase()}
               </div>
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: t.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.domain}</div>
+                <a href={`https://${c.domain}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, fontWeight: 600, color: t.accent, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textDecoration: "none", display: "block" }}>{c.domain}</a>
                 {c.urls.length > 0 && (
-                  <div style={{ fontSize: 11, color: t.textMut, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 300 }}>{c.urls[0]}</div>
+                  <a href={c.urls[0]} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: t.textMut, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 300, textDecoration: "none", display: "block" }}>{c.urls[0]}</a>
                 )}
               </div>
             </div>
