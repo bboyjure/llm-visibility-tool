@@ -9,17 +9,24 @@ export function OverviewTab({ results }) {
       {/* Visibility Score Hero */}
       <div className="bg-bg-card border border-border rounded-2xl p-5 mb-4 flex items-center gap-6 flex-wrap transition-colors duration-300">
         <div>
-          <div className="text-[11px] font-bold text-text-ter uppercase tracking-widest mb-1.5">Visibility Score</div>
-          <div className="text-[48px] font-extrabold text-text leading-none">{results.overall.toFixed(0)}%</div>
+          <div className="text-[11px] font-bold text-text-ter uppercase tracking-widest mb-1.5">Presence Rate</div>
+          <div className="text-[48px] font-extrabold text-text leading-none">{results.presenceRate.toFixed(0)}%</div>
           <div
             className="text-[12px] font-semibold mt-1"
-            style={{ color: results.overall >= 50 ? "#10B981" : results.overall >= 25 ? "#F59E0B" : "#EF4444" }}
+            style={{ color: results.presenceRate >= 60 ? "#10B981" : results.presenceRate >= 30 ? "#F59E0B" : "#EF4444" }}
           >
-            {results.overall >= 50 ? "Strong presence" : results.overall >= 25 ? "Moderate — room to grow" : "Low — action needed"}
+            {results.presenceRate >= 60 ? "Strong presence" : results.presenceRate >= 30 ? "Moderate — room to grow" : "Low — action needed"}
+          </div>
+          <div className="text-[11px] text-text-ter mt-1">
+            Mentioned in {results.presenceCount} of {results.totalChecks} prompts
+          </div>
+          <div className="text-[11px] text-text-ter mt-2">
+            Share of voice: <span className="font-semibold text-text-sec">{results.overall.toFixed(0)}%</span>
+            <span className="ml-1 opacity-60">(vs all brands)</span>
           </div>
         </div>
         <div className="flex gap-4 ml-auto">
-          {[{ l: "ChatGPT", s: results.openai, c: "#10A37F" }, { l: "Gemini", s: results.gemini, c: "#4285F4" }].map((x, i) => (
+          {[{ l: "ChatGPT", s: results.openaiPresence, c: "#10A37F" }, { l: "Gemini", s: results.geminiPresence, c: "#4285F4" }].map((x, i) => (
             <div key={i} className="text-center">
               <div className="relative inline-block">
                 <ScoreRing score={x.s} size={64} stroke={5} color={x.c} />

@@ -17,7 +17,6 @@ services:
     #           capabilities:
     #             - gpu
 
-
   ollama-init:
     image: ollama/ollama:latest
     depends_on:
@@ -37,17 +36,6 @@ services:
       echo 'Done.';
       "
     restart: "no"
-
-  searxng:
-    image: searxng/searxng:latest
-    container_name: searxng
-    ports:
-      - "8888:8080"
-    volumes:
-      - ./searxng:/etc/searxng:rw
-    environment:
-      - SEARXNG_BASE_URL=http://localhost:8888/
-    restart: unless-stopped
 
 volumes:
   ollama_data:

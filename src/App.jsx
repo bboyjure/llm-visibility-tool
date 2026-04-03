@@ -103,6 +103,15 @@ function AppInner() {
     }));
     const brands = Object.values(bMap).sort((a, b) => b.count - a.count);
     const vis = totalM > 0 ? (brandM / totalM) * 100 : 0;
+
+    const isBrand = (name) => { const k = (name || "").toLowerCase(); return k.includes(brand) || brand.includes(k); };
+    const presenceCount = raw.filter(r => r.brands.some(b => isBrand(b.name))).length;
+    const presenceRate = raw.length > 0 ? (presenceCount / raw.length) * 100 : 0;
+    const openaiRaw = raw.filter(r => r.llm === "OpenAI");
+    const geminiRaw = raw.filter(r => r.llm === "Gemini");
+    const openaiPresence = openaiRaw.length > 0 ? (openaiRaw.filter(r => r.brands.some(b => isBrand(b.name))).length / openaiRaw.length) * 100 : 0;
+    const geminiPresence = geminiRaw.length > 0 ? (geminiRaw.filter(r => r.brands.some(b => isBrand(b.name))).length / geminiRaw.length) * 100 : 0;
+
     const cs = (res) => {
       let tt = 0, bm = 0;
       res.forEach(r => r.brands.forEach(x => {
@@ -162,6 +171,8 @@ function AppInner() {
       overall: vis,
       openai: cs(raw.filter(r => r.llm === "OpenAI")),
       gemini: cs(raw.filter(r => r.llm === "Gemini")),
+      presenceRate, presenceCount, totalChecks: raw.length,
+      openaiPresence, geminiPresence,
       brands, citations, stages, promptData, perPrompt: raw, recs,
       totalPrompts: prompts.length,
     });

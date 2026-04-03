@@ -4,6 +4,11 @@ server:
   secret_key: "llm-visibility-tool-secret-change-in-prod"
   limiter: false
   image_proxy: false
+  botdetection:
+    ip_limit:
+      enabled: false
+    link_token:
+      enabled: false
 
 search:
   safe_search: 0
