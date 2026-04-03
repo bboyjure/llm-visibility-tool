@@ -9,6 +9,9 @@ A free, open-source tool that analyzes how well your website/brand appears in AI
 > The default model (`qwen2.5:1.5b`) is intentionally very small so the tool runs on a regular CPU without a GPU. Results **are not accurate** without web search — brand mentions and citations are based on the model's limited training knowledge only.
 >
 > Enable SearXNG (see below) for real web results. Or switch to a larger model or Claude for better quality analysis.
+>
+> **The "ChatGPT" and "Gemini" scores are simulated — not real.**
+> This tool has no access to the ChatGPT or Gemini APIs. Both scores are produced by Ollama (or Claude) asked to roleplay as each platform. The split between them is largely meaningless; treat the combined result as a single rough proxy for brand visibility across AI-style queries.
 
 ---
 
