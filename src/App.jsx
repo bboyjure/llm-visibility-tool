@@ -157,9 +157,13 @@ function AppInner() {
     const cMap = {};
     raw.forEach(r => r.citations.forEach(c => {
       const d = c.domain || getDom(c.url || "x");
-      if (!cMap[d]) cMap[d] = { domain: d, count: 0, urls: [], llms: new Set() };
+      if (!cMap[d]) cMap[d] = { domain: d, count: 0, urls: [], titles: {}, sources: [], llms: new Set() };
       cMap[d].count++; cMap[d].llms.add(r.llm);
-      if (c.url && !cMap[d].urls.includes(c.url)) cMap[d].urls.push(c.url);
+      if (c.url && !cMap[d].urls.includes(c.url)) {
+        cMap[d].urls.push(c.url);
+        if (c.title) cMap[d].titles[c.url] = c.title;
+      }
+      cMap[d].sources.push({ prompt: r.prompt, stage: r.stage, llm: r.llm, summary: r.summary });
     }));
     const totalCit = Object.values(cMap).reduce((s, c) => s + c.count, 0);
     const citations = Object.values(cMap)
