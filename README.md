@@ -49,19 +49,33 @@ Change `VITE_OLLAMA_MODEL` to any model you want (see options below), or switch 
 
 ## Running the stack
 
-The `docker-compose.yml` starts three services:
+The services are split into two compose files:
 
-| Service | What it does | Port |
+| File | Services | Ports |
 |---|---|---|
-| `ollama` | LLM runtime | 11434 |
-| `ollama-init` | Pulls the default model on first run | — |
-| `searxng` | Self-hosted web search engine | 8888 |
+| `docker-compose.ollama.yml` | `ollama`, `ollama-init` (model download) | 11434 |
+| `docker-compose.searxng.yml` | `searxng` | 8888 |
+
+Start both:
 
 ```bash
-docker compose up -d
+docker compose -f docker-compose.ollama.yml up -d
+docker compose -f docker-compose.searxng.yml up -d
 ```
 
 Wait about 30 seconds for Ollama to finish downloading the model, then start the app.
+
+### Running only what you need
+
+If you're using Claude (no Ollama needed), just start SearXNG — or skip it entirely since Claude has built-in web search:
+
+```bash
+# SearXNG only
+docker compose -f docker-compose.searxng.yml up -d
+
+# Ollama only (if you don't want web search)
+docker compose -f docker-compose.ollama.yml up -d
+```
 
 ### Running Ollama without Docker
 
@@ -75,7 +89,7 @@ Wait about 30 seconds for Ollama to finish downloading the model, then start the
 If you run Ollama natively you still need SearXNG in Docker for web search:
 
 ```bash
-docker compose up searxng -d
+docker compose -f docker-compose.searxng.yml up -d
 ```
 
 ---
@@ -96,7 +110,7 @@ SearXNG is a free, self-hosted metasearch engine. When running, the tool fetches
 SearXNG requires a config file on first run. It's already included at `searxng/settings.yml`. If you need to regenerate it:
 
 ```bash
-docker compose up searxng -d
+docker compose -f docker-compose.searxng.yml up -d
 # then check http://localhost:8888 — it should load the search UI
 ```
 
@@ -123,8 +137,8 @@ After pulling, update `VITE_OLLAMA_MODEL` in `.env` to match. For tool-calling s
 To switch models via Docker:
 
 ```bash
-# Edit the ollama pull line in docker-compose.yml, then:
-docker compose up ollama-init --force-recreate
+# Edit the ollama pull line in docker-compose.ollama.yml, then:
+docker compose -f docker-compose.ollama.yml up ollama-init --force-recreate
 ```
 
 ---
@@ -168,5 +182,5 @@ That's it — no other changes needed. SearXNG is bypassed automatically when Cl
    - **Overview** — overall visibility score, ChatGPT vs Gemini comparison, top sources
    - **Prompts** — per-prompt breakdown
    - **Market Share** — competitor brand mentions
-   - **Citations** — sources the LLM referenced (clickable links)
+   - **Citations** — sources the LLM referenced; click any row to see page titles, URLs, and which prompts cited them
    - **Actions** — prioritized recommendations (content to create, Reddit threads, Wikipedia, etc.)
